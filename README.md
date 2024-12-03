@@ -1,6 +1,6 @@
 
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">DynamicTable</h1>
-<h4 align="center">自定义表格列，自定义列表字段配置，快速实现动态表格列管理</h4>
+<h4 align="center">动态表格列字段配置，快速实现table字段隐藏显示</h4>
 
 
 ## 系统简介
