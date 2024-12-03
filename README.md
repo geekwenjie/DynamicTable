@@ -31,7 +31,7 @@ slave:
 
 ​	默认用户名：admin 密码：123456
 
-<img src="/Users/wenjie/Library/Application Support/typora-user-images/image-20241203144314646.png" alt="image-20241203144314646" style="zoom: 20%;" />
+<img src="https://github.com/775747758/DynamicTable/blob/master/doc/image-20241203144314646.png" alt="image-20241203144314646" style="zoom: 20%;" />
 
 4、新增表格模型
 
@@ -39,11 +39,11 @@ slave:
 
 
 
-<img src="/Users/wenjie/Library/Application Support/typora-user-images/image-20241203151039405.png" alt="image-20241203151039405" style="zoom:25%;" />
+<img src="https://github.com/775747758/DynamicTable/blob/master/doc/image-20241203151039405.png" alt="image-20241203151039405" style="zoom:25%;" />
 
 5、字段设置：【表格模型】列表点击编辑，切换到【字段设置】
 
-<img src="/Users/wenjie/Library/Application Support/typora-user-images/image-20241203151200134.png" alt="image-20241203151200134" style="zoom:25%;" />
+<img src="https://github.com/775747758/DynamicTable/blob/master/doc/image-20241203151200134.png" alt="image-20241203151200134" style="zoom:25%;" />
 
 （1）默认这里带出的都是数据库表中所有字段
 
@@ -59,7 +59,7 @@ slave:
 
 ​	在您的业务系统中，同一个数据库表可能对应多个表格视图，系统允许针对每个表格视图配置不同的字段显示，提供更灵活的管理方式
 
-<img src="/Users/wenjie/Library/Application Support/typora-user-images/image-20241203164951485.png" alt="image-20241203164951485" style="zoom:25%;" />
+<img src="https://github.com/775747758/DynamicTable/blob/master/doc/image-20241203150848470.png" alt="image-20241203151200134" style="zoom:25%;" />
 
 7、第三方业务系统对接
 
