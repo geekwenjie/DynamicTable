@@ -35,7 +35,7 @@ slave:
 
 4、新增表格模型
 
-<img src="/Users/wenjie/Library/Application Support/typora-user-images/image-20241203150951853.png" alt="image-20241203150951853" style="zoom:25%;" />
+<img src="https://github.com/775747758/DynamicTable/blob/master/doc/image-20241203150951853.png" alt="image-20241203150951853" style="zoom:25%;" />
 
 
 
