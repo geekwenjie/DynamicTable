@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dynamic.table.mapper.TabFieldMapper">
+
+    <resultMap type="TabField" id="TabFieldResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="tableModelId"    column="table_model_id"    />
+        <result property="tabId"    column="tab_id"    />
+        <result property="fieldCode"    column="field_code"    />
+        <result property="fieldId"    column="field_id"    />
+        <result property="fieldOrder"    column="field_order"    />
+    </resultMap>
+
+    <resultMap type="TableColumnDO" id="TableColumnResult">
+        <result property="fieldOrder"    column="field_order"    />
+        <result property="fieldName"    column="field_name"    />
+        <result property="fieldCode"    column="field_code"    />
+        <result property="sortFlag"    column="sort_flag"    />
+        <result property="width"    column="width"    />
+    </resultMap>
+
+    <sql id="selectTabFieldVo">
+        select id, create_by, create_time, update_by, update_time, remark, table_model_id, tab_id, field_code, field_id, field_order from list_tab_field
+    </sql>
+
+    <select id="selectTabFieldList" parameterType="TabField" resultMap="TabFieldResult">
+        <include refid="selectTabFieldVo"/>
+        <where>
+            <if test="tableModelId != null "> and table_model_id = #{tableModelId}</if>
+            <if test="tabId != null "> and tab_id = #{tabId}</if>
+            <if test="fieldCode != null  and fieldCode != ''"> and field_code = #{fieldCode}</if>
+            <if test="fieldId != null "> and field_id = #{fieldId}</if>
+            <if test="fieldOrder != null "> and field_order = #{fieldOrder}</if>
+        </where>
+    </select>
+
+    <select id="selectTabFieldById" parameterType="Long" resultMap="TabFieldResult">
+        <include refid="selectTabFieldVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTabField" parameterType="TabField" useGeneratedKeys="true" keyProperty="id">
+        insert into list_tab_field
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="tableModelId != null">table_model_id,</if>
+            <if test="tabId != null">tab_id,</if>
+            <if test="fieldCode != null">field_code,</if>
+            <if test="fieldId != null">field_id,</if>
+            <if test="fieldOrder != null">field_order,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="tableModelId != null">#{tableModelId},</if>
+            <if test="tabId != null">#{tabId},</if>
+            <if test="fieldCode != null">#{fieldCode},</if>
+            <if test="fieldId != null">#{fieldId},</if>
+            <if test="fieldOrder != null">#{fieldOrder},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTabField" parameterType="TabField">
+        update list_tab_field
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="tableModelId != null">table_model_id = #{tableModelId},</if>
+            <if test="tabId != null">tab_id = #{tabId},</if>
+            <if test="fieldCode != null">field_code = #{fieldCode},</if>
+            <if test="fieldId != null">field_id = #{fieldId},</if>
+            <if test="fieldOrder != null">field_order = #{fieldOrder},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTabFieldById" parameterType="Long">
+        delete from list_tab_field where id = #{id}
+    </delete>
+
+    <delete id="deleteTabFieldByIds" parameterType="String">
+        delete from list_tab_field where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectByIds" parameterType="Long" resultMap="TabFieldResult">
+        <include refid="selectTabFieldVo"/>
+        where id in (${fieldIds})
+    </select>
+
+    <insert id="batchInsertTabField" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into list_tab_field
+        (
+        table_model_id,
+        tab_id,
+        field_id,
+        field_order
+        ) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (
+            #{item.tableModelId},
+            #{item.tabId},
+            #{item.fieldId},
+            #{item.fieldOrder}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectByTabId" parameterType="Long" resultMap="TabFieldResult">
+        <include refid="selectTabFieldVo"/>
+        where tab_id = #{tabId}
+    </select>
+
+    <delete id="deleteByTabId" parameterType="Long">
+        delete from list_tab_field where tab_id = #{tabId}
+    </delete>
+
+    <delete id="deleteByTabIds" parameterType="String">
+        delete from list_tab_field where tab_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByModelIds" parameterType="String">
+        delete from list_tab_field where table_model_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectTabField" resultMap="TableColumnResult">
+        SELECT
+            a.field_name,
+            a.field_code,
+            a.sort_flag,
+            a.width,
+            f.field_order
+        FROM
+            list_tab_field f
+                LEFT JOIN list_table_model m ON f.table_model_id = m.id
+                LEFT JOIN list_table_tab t ON f.tab_id = t.id
+                LEFT JOIN list_table_field a ON a.id = f.field_id
+        WHERE
+            m.model_code = #{modelCode} and t.tab_name = #{tabName} order by f.field_order
+    </select>
+
+</mapper>

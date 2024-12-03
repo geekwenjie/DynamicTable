@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改表格模型字段')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-field-edit" th:object="${tableField}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">备注：</label>
+                    <div class="col-sm-8">
+                        <textarea name="remark" class="form-control">[[*{remark}]]</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">表模型ID：</label>
+                    <div class="col-sm-8">
+                        <input name="tableModelId" th:field="*{tableModelId}" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">字段名称：</label>
+                    <div class="col-sm-8">
+                        <input name="fieldName" th:field="*{fieldName}" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">字段代码：</label>
+                    <div class="col-sm-8">
+                        <input name="fieldCode" th:field="*{fieldCode}" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">是否显示：</label>
+                    <div class="col-sm-8">
+                        <input name="showFlag" th:field="*{showFlag}" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">是否排序：</label>
+                    <div class="col-sm-8">
+                        <input name="sortFlag" th:field="*{sortFlag}" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">默认宽度：</label>
+                    <div class="col-sm-8">
+                        <input name="width" th:field="*{width}" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "table/field";
+        $("#form-field-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-field-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

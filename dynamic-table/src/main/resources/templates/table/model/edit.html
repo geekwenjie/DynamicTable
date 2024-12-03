@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改列模型')" />
+    <th:block th:include="include :: select2-css" />
+
+    <style type="text/css">
+        .select-table .table td{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .form-control{padding:3px 6px 4px;height:30px;}
+        .icheckbox-blue{top:0px;left:6px;}
+        .form-control.select2-hidden-accessible{position:static!important;}
+        .select-table table label.error{position: inherit;}select + label.error{z-index:1;right:40px;}
+    </style>
+</head>
+<body class="white-bg">
+    <!--<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-model-edit" th:object="${tableModel}">
+            <input name="id" th:field="*{id}" type="hidden">
+        </form>
+    </div>-->
+    <section class="section-content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content" style="border-style:none;">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs" id="tabs">
+                                <li class="active"><a href="#tab-basic" data-toggle="tab" aria-expanded="true">基本信息</a></li>
+                                <li><a id="tab-field-li" href="#tab-field" data-toggle="tab" aria-expanded="false" disabled="true" aria-disabled="true">字段设置</a></li>
+                                <li class="disabled"><a id="tab-tab-li" class="disabled" href="#tab-tab" data-toggle="tab" aria-expanded="false"  aria-disabled="true">列表设置</a></li>
+                            </ul>
+
+                                <div class="tab-content">
+                                    <!-- 基本信息 -->
+                                    <div class="tab-pane active" id="tab-basic">
+                                        <form id="form-model-edit" class="form-horizontal" th:object="${tableModel}">
+                                            <input id="modelId" name="id" th:field="*{id}" type="hidden">
+                                        <div class="row mt20">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label is-required">表名称：</label>
+                                                    <div class="col-sm-8">
+                                                        <input th:field="*{tableName}" name="tableName" class="form-control" type="text" required disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label is-required">模型名称：</label>
+                                                    <div class="col-sm-8">
+                                                        <input th:field="*{modelName}" name="modelName" class="form-control" type="text" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label is-required">模型编码：</label>
+                                                    <div class="col-sm-8">
+                                                        <input th:field="*{modelCode}" name="modelCode" class="form-control" type="text" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="box-footer" style="margin: 20px;">
+                                            <div class="col-sm-offset-5 col-sm-6" >
+                                                <button type="button" class="btn btn-sm btn-primary" onclick="submitHandlerFormModel()"><i class="fa fa-check"></i>保 存</button>&nbsp;
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+                                            </div>
+                                        </div>
+                                        </form>
+                                    </div>
+
+                                    <!-- 字段设置 -->
+                                    <div class="tab-pane" id="tab-field">
+                                        <form id="form-model-field" class="form-horizontal" th:object="${tableModel}">
+                                        <button type="button" class="btn btn-white btn-sm" style="margin-top: 10px;" onclick="addRow()"><i class="fa fa-plus"> 增加</i></button>
+                                        <button type="button" class="btn btn-white btn-sm" style="margin-top: 10px;" onclick="sub.delRow()"><i class="fa fa-minus"> 删除</i></button>
+                                        <div class="select-table table-striped" style="margin-top: 0px;padding-top: 0px;padding-bottom: 0px">
+                                            <table id="fieldTable"></table>
+                                        </div>
+                                        <div class="box-footer" style="margin: 20px;">
+                                            <div class="col-sm-offset-5 col-sm-6" style="margin-bottom: 20px;">
+                                                <button type="button" class="btn btn-sm btn-primary" onclick="submitHandlerFormField()"><i class="fa fa-check"></i>保 存</button>&nbsp;
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+                                            </div>
+                                        </div>
+                                        </form>
+                                    </div>
+
+                                    <!-- 列表设置 -->
+                                    <div class="tab-pane" id="tab-tab">
+                                        <div>
+                                            <div class="col-sm-12">
+                                                <form id="tabListForm">
+                                                    <div class="select-list">
+                                                        <ul>
+                                                            <li>
+                                                                <label>列表名称：</label>
+                                                                <input type="text" name="params[tabName]"/>
+                                                            </li>
+                                                            <li>
+                                                                <label>列表标题：</label>
+                                                                <input type="text" name="tabTitle"/>
+                                                            </li>
+                                                            <li>
+                                                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search('tabListForm','tabTable')"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('tabListForm','tabTable')"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="btn-group-sm" id="toolbarTab" style="margin-left: 15px;">
+                                                <a class="btn btn-success" onclick="addTableTab()" >
+                                                    <i class="fa fa-plus"></i> 添加
+                                                </a>
+                                            </div>
+                                            <div class="select-table table-striped" style="margin-top: 0px;padding-top: 0px;padding-bottom: 0px">
+                                                <table id="tabTable"></table>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                        </div>
+                    </div>
+                   <!-- <div class="box-footer">
+                        <div class="col-sm-offset-5 col-sm-6">
+                            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
+                            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </section>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: select2-js" />
+    <script th:src="@{/js/jquery.tmpl.js}"></script>
+    <th:block th:include="include :: jquery-cxselect-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "table/model";
+        var tableTabPrefix = ctx + "table/tab";
+        $("#form-model-edit").validate({
+            focusCleanup: true
+        });
+
+        $("#form-model-field").validate({
+            focusCleanup: true
+        });
+
+        //提交基本信息
+        function submitHandlerFormModel() {
+            if ($.validate.form("form-model-edit")) {
+                $.operate.saveTab(prefix + "/edit",$('#form-model-edit').serialize());
+            }
+        }
+
+        //提交字段信息
+        function submitHandlerFormField() {
+            if ($.validate.form("form-model-field")) {
+                //$.operate.save(prefix + "/edit", $('#form-model-edit').serialize());
+                var data = $("#form-model-field").serializeArray();
+                data.push({"name": "id", "value": $("#modelId").val()});
+                $.operate.saveTab(prefix + "/edit", data);
+            }
+        }
+
+
+        $(function() {
+            $('#tabs a').click(function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+                var activeTab = (e.target).id;
+                if(activeTab == 'tab-field-li'){
+                    //初始化列字段
+                    initColumnList();
+                }else if(activeTab == 'tab-tab-li'){
+                    //初始化列标签
+                    initTabList();
+                }
+            });
+        });
+
+
+        //初始化字段列表
+        function initColumnList(){
+            var options = {
+                id: "fieldTable",
+                url: prefix + "/columnList?tableModelId=" +  $('[name="id"]').val(),
+                sidePagination: "client",
+                sortName: "sort",
+                sortOrder: "desc",
+                height: $(window).height() - 160,
+                pagination: false,
+                showSearch: false,
+                showRefresh: false,
+                showToggle: false,
+                showColumns: false,
+                columns: [{
+                    width: "5%",
+                    checkbox: true
+                },{
+                    field: 'index',
+                    title: "序号",
+                    width: "5%",
+                    formatter: function (value, row, index) {
+                        //隐藏域
+                        var columnIndex = $.common.sprintf("<input type='hidden' name='index' value='%s'>", $.table.serialNumber(index));
+                        var columnId = $.common.sprintf("<input type='hidden' name='fieldList[%s].id' value='%s'>", index, row.id);
+                        var tableModelId = $.common.sprintf("<input type='hidden' name='fieldList[%s].tableModelId' value='%s'>", index, row.tableModelId);
+                        return columnIndex + $.table.serialNumber(index) + columnId + tableModelId;
+                    },
+                    cellStyle: function(value, row, index) {
+                        return { css: { "text-align": "center" } };
+                    }
+                },
+                    {
+                        field: 'fieldName',
+                        title: '字段列名',
+                        width: "30%",
+                        formatter: function (value, row, index) {
+                            var html = $.common.sprintf("<input class='form-control' type='text' name='fieldList[%s].fieldName' value='%s' required maxlength='200'>", index, value);
+                            return html;
+                        }
+                    },
+                    {
+                        field: 'fieldCode',
+                        title: '字段代码',
+                        width: "30%",
+                        formatter: function (value, row, index) {
+                            var html = $.common.sprintf("<input class='form-control' type='text' name='fieldList[%s].fieldCode' value='%s' required maxlength='200'>", index, value);
+                            return html;
+                        }
+                    },
+                    {
+                        field: 'showFlag',
+                        title: '是否显示',
+                        width: "10%",
+                        formatter: function (value, row, index) {
+                            var data = [{ index: index, showFlag: value }];
+                            return $("#showFlagTpl").tmpl(data).html();
+                        }
+                    },
+                    {
+                        field: 'sortFlag',
+                        title: '是否排序',
+                        width: "10%",
+                        formatter: function (value, row, index) {
+                            var data = [{ index: index, sortFlag: value }];
+                            return $("#sortFlagTpl").tmpl(data).html();
+                        }
+                    },
+                    {
+                        field: 'width',
+                        title: '默认宽度',
+                        width: "20%",
+                        formatter: function (value, row, index) {
+                            var html = $.common.sprintf("<input class='form-control' type='number' name='fieldList[%s].width' value='%s' step='1' required digits min='1' max='10000'>", index, value);
+                            return html;
+                        }
+                    }]
+            };
+            $.table.init(options);
+        }
+
+        function addRow() {
+           var defaultWidth = [[${@config.getKey('tableModel.defaultWidth')}]];
+            var count = $("#" + table.options.id).bootstrapTable('getData').length;
+            var row = {
+                index: $.table.serialNumber(count),
+                fieldName: "",
+                fieldCode: "",
+                showFlag: "",
+                sortFlag: "",
+                width: defaultWidth,
+                tableModelId: $('[name="id"]').val()
+            }
+            sub.addRow(row);
+        }
+
+        function initTabList(){
+            var options = {
+                id: "tabTable",
+                toolbar: "toolbarTab",
+                url: tableTabPrefix + "/list?tableModelId=" + $("#modelId").val(),
+                createUrl: tableTabPrefix + "/add",
+                updateUrl: tableTabPrefix + "/edit/{id}",
+                removeUrl: tableTabPrefix + "/remove",
+                exportUrl: tableTabPrefix + "/export",
+                modalName: "列表标签",
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field: 'id',
+                        title: 'ID',
+                        visible: false
+                    },
+                    {
+                        title: '操作',
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            var actions = [];
+                            actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="editTableTab(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                            actions.push('<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                            return actions.join('');
+                        }
+                    },
+                    {
+                        field: 'tabTitle',
+                        title: '列表标题'
+                    },
+                    {
+                        field: 'tabName',
+                        title: '列表名称'
+                    },
+                    {
+                        field: 'createTime',
+                        title: '创建时间'
+                    }]
+            };
+            $.table.init(options);
+        }
+
+        //添加tab
+        function addTableTab(){
+            $.modal.popupRight("添加列表标签", tableTabPrefix + "/add?tableModelId=" + $("#modelId").val());
+        }
+
+        //编辑tab
+        function editTableTab(rowId){
+            $.modal.popupRight("修改列表标签", tableTabPrefix + "/edit/" + rowId);
+        }
+
+    </script>
+</body>
+</html>
+
+<!-- 是否显示 -->
+<script id="showFlagTpl" type="text/x-jquery-tmpl">
+<div>
+<select class='form-control' name='fieldList[${index}].showFlag'>
+    <option value="1" {{if showFlag=="1"}}selected{{/if}}>是</option>
+    <option value="0" {{if showFlag=="0"}}selected{{/if}}>否</option>
+</select>
+</div>
+</script>
+
+<!-- 是否排序 -->
+<script id="sortFlagTpl" type="text/x-jquery-tmpl">
+<div>
+<select class='form-control' name='fieldList[${index}].sortFlag'>
+    <option value="0" {{if sortFlag=="0"}}selected{{/if}}>否</option>
+    <option value="1" {{if sortFlag=="1"}}selected{{/if}}>是</option>
+</select>
+</div>
+</script>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dynamic.table.mapper.TableFieldMapper">
+
+    <resultMap type="TableField" id="TableFieldResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="tableModelId"    column="table_model_id"    />
+        <result property="fieldName"    column="field_name"    />
+        <result property="fieldCode"    column="field_code"    />
+        <result property="showFlag"    column="show_flag"    />
+        <result property="sortFlag"    column="sort_flag"    />
+        <result property="width"    column="width"    />
+    </resultMap>
+
+    <sql id="selectTableFieldVo">
+        select id, create_by, create_time, update_by, update_time, remark, table_model_id, field_name, field_code, show_flag, sort_flag, width from list_table_field
+    </sql>
+
+    <select id="selectTableFieldList" parameterType="TableField" resultMap="TableFieldResult">
+        <include refid="selectTableFieldVo"/>
+        <where>
+            <if test="tableModelId != null "> and table_model_id = #{tableModelId}</if>
+            <if test="fieldName != null  and fieldName != ''"> and field_name like concat('%', #{fieldName}, '%')</if>
+            <if test="fieldCode != null  and fieldCode != ''"> and field_code = #{fieldCode}</if>
+            <if test="showFlag != null "> and show_flag = #{showFlag}</if>
+            <if test="sortFlag != null "> and sort_flag = #{sortFlag}</if>
+            <if test="width != null "> and width = #{width}</if>
+        </where>
+    </select>
+
+    <select id="selectTableFieldById" parameterType="Long" resultMap="TableFieldResult">
+        <include refid="selectTableFieldVo"/>
+        where id = #{id}
+    </select>
+
+
+    <insert id="insertTableField" parameterType="TableField" useGeneratedKeys="true" keyProperty="id">
+        insert into list_table_field
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="tableModelId != null">table_model_id,</if>
+            <if test="fieldName != null">field_name,</if>
+            <if test="fieldCode != null">field_code,</if>
+            <if test="showFlag != null">show_flag,</if>
+            <if test="sortFlag != null">sort_flag,</if>
+            <if test="width != null">width,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="tableModelId != null">#{tableModelId},</if>
+            <if test="fieldName != null">#{fieldName},</if>
+            <if test="fieldCode != null">#{fieldCode},</if>
+            <if test="showFlag != null">#{showFlag},</if>
+            <if test="sortFlag != null">#{sortFlag},</if>
+            <if test="width != null">#{width},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTableField" parameterType="TableField">
+        update list_table_field
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="tableModelId != null">table_model_id = #{tableModelId},</if>
+            <if test="fieldName != null">field_name = #{fieldName},</if>
+            <if test="fieldCode != null">field_code = #{fieldCode},</if>
+            <if test="showFlag != null">show_flag = #{showFlag},</if>
+            <if test="sortFlag != null">sort_flag = #{sortFlag},</if>
+            <if test="width != null">width = #{width},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTableFieldById" parameterType="Long">
+        delete from list_table_field where id = #{id}
+    </delete>
+
+    <delete id="deleteTableFieldByIds" parameterType="String">
+        delete from list_table_field where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="batchInsertTableField" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into list_table_field
+            (
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark,
+               table_model_id,
+               field_name,
+               field_code,
+               show_flag,
+               sort_flag,
+               width
+            ) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (
+                #{item.createBy},
+                #{item.createTime},
+                #{item.updateBy},
+                #{item.updateTime},
+                #{item.remark},
+                #{item.tableModelId},
+                #{item.fieldName},
+                #{item.fieldCode},
+                #{item.showFlag},
+                #{item.sortFlag},
+                #{item.width}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectByModelId" parameterType="Long" resultMap="TableFieldResult">
+        <include refid="selectTableFieldVo"/>
+        where table_model_id = #{tableModelId}
+    </select>
+
+    <delete id="deleteByModelIds" parameterType="String">
+        delete from list_table_field where table_model_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>

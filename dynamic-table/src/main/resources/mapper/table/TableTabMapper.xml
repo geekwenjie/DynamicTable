@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dynamic.table.mapper.TableTabMapper">
+
+    <resultMap type="TableTab" id="TableTabResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="tabName"    column="tab_name"    />
+        <result property="tabTitle"    column="tab_title"    />
+        <result property="tableModelId"    column="table_model_id"    />
+    </resultMap>
+
+    <sql id="selectTableTabVo">
+        select id, create_by, create_time, update_by, update_time, remark, tab_name, tab_title, table_model_id from list_table_tab
+    </sql>
+
+    <select id="selectTableTabList" parameterType="TableTab" resultMap="TableTabResult">
+        <include refid="selectTableTabVo"/>
+        <where>
+            <if test="tabName != null  and tabName != ''"> and tab_name = #{tabName}</if>
+            <if test="tabTitle != null  and tabTitle != ''"> and tab_title like concat('%', #{tabTitle}, '%')</if>
+            <if test="tableModelId != null "> and table_model_id = #{tableModelId}</if>
+            <if test="params.tabName != null and params.tabName != ''">
+                and tab_name like concat('%', #{params.tabName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectTableTabById" parameterType="Long" resultMap="TableTabResult">
+        <include refid="selectTableTabVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTableTab" parameterType="TableTab" useGeneratedKeys="true" keyProperty="id">
+        insert into list_table_tab
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="tabName != null">tab_name,</if>
+            <if test="tabTitle != null">tab_title,</if>
+            <if test="tableModelId != null">table_model_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="tabName != null">#{tabName},</if>
+            <if test="tabTitle != null">#{tabTitle},</if>
+            <if test="tableModelId != null">#{tableModelId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTableTab" parameterType="TableTab">
+        update list_table_tab
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="tabName != null">tab_name = #{tabName},</if>
+            <if test="tabTitle != null">tab_title = #{tabTitle},</if>
+            <if test="tableModelId != null">table_model_id = #{tableModelId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTableTabById" parameterType="Long">
+        delete from list_table_tab where id = #{id}
+    </delete>
+
+    <delete id="deleteTableTabByIds" parameterType="String">
+        delete from list_table_tab where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectByTabName" parameterType="String" resultMap="TableTabResult">
+        <include refid="selectTableTabVo"/>
+        where tab_name = #{tabName}
+    </select>
+
+</mapper>

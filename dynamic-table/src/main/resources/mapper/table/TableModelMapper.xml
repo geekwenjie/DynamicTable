@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dynamic.table.mapper.TableModelMapper">
+
+    <resultMap type="TableModel" id="TableModelResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="modelName"    column="model_name"    />
+        <result property="modelCode"    column="model_code"    />
+        <result property="tableName"    column="table_name"    />
+    </resultMap>
+
+    <sql id="selectTableModelVo">
+        select id, create_by, create_time, update_by, update_time, remark, model_name, model_code, table_name from list_table_model
+    </sql>
+
+    <select id="selectTableModelList" parameterType="TableModel" resultMap="TableModelResult">
+        <include refid="selectTableModelVo"/>
+        <where>
+            <if test="modelName != null  and modelName != ''"> and model_name like concat('%', #{modelName}, '%')</if>
+            <if test="modelCode != null  and modelCode != ''"> and model_code = #{modelCode}</if>
+            <if test="params.modelCode != null and params.modelCode != ''">
+                and model_code like concat('%', #{params.modelCode}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectTableModelById" parameterType="Long" resultMap="TableModelResult">
+        <include refid="selectTableModelVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTableModel" parameterType="TableModel" useGeneratedKeys="true" keyProperty="id">
+        insert into list_table_model
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="modelName != null">model_name,</if>
+            <if test="modelCode != null">model_code,</if>
+            <if test="tableName != null">table_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="modelName != null">#{modelName},</if>
+            <if test="modelCode != null">#{modelCode},</if>
+            <if test="tableName != null">#{tableName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTableModel" parameterType="TableModel">
+        update list_table_model
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="modelName != null">model_name = #{modelName},</if>
+            <if test="modelCode != null">model_code = #{modelCode},</if>
+            <if test="tableName != null">table_name = #{tableName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTableModelById" parameterType="Long">
+        delete from list_table_model where id = #{id}
+    </delete>
+
+    <delete id="deleteTableModelByIds" parameterType="String">
+        delete from list_table_model where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectByModelCode" parameterType="String" resultMap="TableModelResult">
+        <include refid="selectTableModelVo"/>
+        where model_code = #{modelCode}
+    </select>
+
+</mapper>

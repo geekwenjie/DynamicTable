@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增列模型')" />
+    <th:block th:include="include :: select2-css" />
+    <style type="text/css">
+        .select-table table{table-layout:fixed;}.table>thead>tr>th{text-align:center;}.select-table .table td{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.form-control{padding:3px 6px 4px;height:30px;}.icheckbox-blue{top:0px;left:6px;}.form-control.select2-hidden-accessible{position:static!important;}.select-table table label.error{position: inherit;}select + label.error{z-index:1;right:40px;}
+    </style>
+</head>
+<body class="white-bg" style="font: 14px Helvetica Neue, Helvetica, PingFang SC, 微软雅黑, Tahoma, Arial, sans-serif !important;">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label class="col-xs-3 control-label">数据库表：</label>
+                    <div class="col-xs-8">
+                        <select id="dbTable" class="form-control">
+                            <option value="" text="==请选择=="></option>
+                            <option th:each="dbTable:${dbTableList}" th:value="${dbTable.tableName}" th:text="${dbTable.tableComment + ' 【' + dbTable.tableName + '】'}" th:data-tableComment="${dbTable.tableComment}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <section class="section-content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content" style="border-style:none;">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#tab-basic" data-toggle="tab" aria-expanded="true">基本信息</a></li>
+                                <li class="disabled"><a>字段设置</a></li>
+                                <li class="disabled"><a>列表设置</a></li>
+                            </ul>
+                            <form id="form-model-add" class="form-horizontal">
+                                <div class="tab-content">
+                                    <!-- 基本信息 -->
+                                    <div class="tab-pane active" id="tab-basic">
+                                        <div class="row mt20">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label is-required">模型名称：</label>
+                                                    <div class="col-sm-8">
+                                                        <input name="modelName" class="form-control" type="text" required readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label is-required">模型编码：</label>
+                                                    <div class="col-sm-8">
+                                                        <input name="modelCode" class="form-control" type="text" required readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 字段信息 -->
+                                    <div class="tab-pane" id="tab-field">
+
+                                    </div>
+
+                                    <!-- 生成信息 -->
+                                    <div class="tab-pane" id="tab-tab">
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <div class="col-sm-offset-5 col-sm-6">
+                            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
+                            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: select2-js" />
+    <script th:src="@{/js/jquery.tmpl.js}"></script>
+    <th:block th:include="include :: jquery-cxselect-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "table/model"
+        $("#form-model-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if($.common.isEmpty($("#dbTable").val())){
+                $.modal.msgError("请选择数据库表！");
+                return;
+            }
+            if ($.validate.form("form-model-add")) {
+                // 序列化表单数据
+                var serializedData = $('#form-model-add').serialize();
+                // 拼接其他数据
+                var tableName = 'tableName=' + $("#dbTable").val();
+                var finalData = serializedData + '&' + tableName;
+                $.operate.saveTab(prefix + "/add", finalData);
+            }
+        }
+
+        $(function() {
+            $('#dbTable').select2({
+                placeholder: "请选择数据库表",
+                allowClear: true
+            });
+
+            //选择表事件
+            $('#dbTable').change(function() {
+                var selectedValue = $(this).val();  // 获取选中的值
+                // 获取选中的 option
+                var selectedOption = $(this).find('option:selected');
+                var tableComment = selectedOption.attr('data-tableComment');
+                $('[name="modelName"]').val(tableComment);
+                $.ajax({
+                    type: "POST",
+                    url: prefix + "/getModelCode?tableName=" + selectedValue,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function(result) {
+                        if (result.code == web_status.SUCCESS) {
+                            $('[name="modelCode"]').val(result.data);
+                        } else {
+                            $.modal.alertError(result.msg);
+                        }
+                    },
+                    error: function(error) {
+                        $.modal.alertWarning("失败：" + error);
+                    }
+                });
+            });
+        })
+
+        //初始化字段列表
+        function initColumnList(tableName){
+            var options = {
+                url: prefix + "/columnList?tableName=" + tableName,
+                sidePagination: "client",
+                sortName: "sort",
+                sortOrder: "desc",
+                height: $(window).height() - 160,
+                pagination: false,
+                showSearch: false,
+                showRefresh: false,
+                showToggle: false,
+                showColumns: false,
+                onLoadSuccess: onLoadSuccess,
+                //onReorderRow: onReorderRow,
+                columns: [{
+                    title: "序号",
+                    width: "25%",
+                    formatter: function (value, row, index) {
+                        // 编号隐藏域
+                        //var columnIdHtml = $.common.sprintf("<input type='hidden' name='columns[%s].columnId' value='%s'>", index, row.columnId);
+                        // 排序隐藏域
+                        //var sortHtml = $.common.sprintf("<input type='hidden' name='columns[%s].sort' value='%s' id='columns_sort_%s'>", index, row.sort, row.columnId);
+                        return $.table.serialNumber(index);
+                    },
+                    cellStyle: function(value, row, index) {
+                        return { css: { "cursor": "move" } };
+                    }
+                },
+                    {
+                        field: 'columnName',
+                        title: '字段列名',
+                        width: "25%",
+                        class: "nodrag",
+                        cellStyle: function(value, row, index) {
+                            return { css: { "cursor": "default" } };
+                        }
+                    },
+                    {
+                        field: 'columnComment',
+                        title: '字段描述',
+                        width: "25%",
+                        formatter: function (value, row, index) {
+                            var html = $.common.sprintf("<input class='form-control' type='text' name='columns[%s].columnComment' value='%s'>", index, value);
+                            return html;
+                        }
+                    },
+                    {
+                        field: 'javaField',
+                        title: 'Java属性',
+                        width: "25%",
+                        formatter: function (value, row, index) {
+                            var html = $.common.sprintf("<input class='form-control' type='text' name='columns[%s].javaField' value='%s' required>", index, value);
+                            return html;
+                        }
+                    }]
+            };
+            $.table.init(options);
+        }
+
+        // 当所有数据被加载时触发处理函数
+        function onLoadSuccess(data){
+            // 强制触发 resize 事件
+            $(window).trigger('resize');
+            //$("#bootstrap-table").bootstrapTable('resetView');
+            $.fn.select2.defaults.set( "theme", "bootstrap" );
+            $("select.form-control").each(function () {
+                $(this).select2().on("change", function () {
+                    $(this).valid();
+                })
+            })
+            $(".check-box").each(function() {
+                $(this).iCheck({
+                    checkboxClass: 'icheckbox-blue'
+                })
+            })
+        }
+
+        // 当拖拽结束后处理函数
+        function onReorderRow(data) {
+            for (var i = 0; i < data.length; i++) {
+                $("#columns_sort_" + data[i].columnId).val(i+1);
+            }
+        }
+
+
+    </script>
+</body>
+</html>
