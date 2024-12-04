@@ -67,7 +67,7 @@ slave:
 
 ​	在您的业务系统中，同一个数据库表可能对应多个表格视图，系统允许针对每个表格视图配置不同的字段显示，提供更灵活的管理方式
 
-<img src="https://github.com/775747758/DynamicTable/blob/master/doc/image-20241203150848470.png" alt="image-20241203151200134" style="zoom:25%;" />
+<img src="https://github.com/775747758/DynamicTable/blob/master/doc/image-20241203164951485.png" alt="image-20241203151200134" style="zoom:25%;" />
 
 7、第三方业务系统对接
 
