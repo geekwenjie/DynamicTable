@@ -15,6 +15,13 @@
 
 3、DynamicTable是基于若依系统开发的SpringBoot项目
 
+## 案例演示
+
+
+https://github.com/user-attachments/assets/cdf4e2eb-0961-4e07-86ff-4558f0e9b324
+
+
+
 ## 使用流程
 
 1、运行系统
