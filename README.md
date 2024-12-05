@@ -71,7 +71,7 @@ slave:
 
 7、第三方业务系统对接
 
-​	您的业务系统可以使用如下接口对接
+您的业务系统可以使用如下接口对接
 
 接口名称：查询表格字段
 
@@ -122,3 +122,142 @@ slave:
     ]
 }
 ```
+
+8、对接示例
+
+（1）Vue2+Element UI
+
+```js
+// 获取表字段列表
+export function getColumns(modelCode,tabName) {
+  return request({
+    url: 'http://127.0.0.1/api/tablecolumn/getTableColumnList?modelCode=' + modelCode + "&tabName=" + tabName,
+    method: 'get'
+  })
+}
+
+export default {
+  name: "Customer",
+  data() {
+    return {
+      // 表格列（从接口获取）
+      columns: []
+    };
+  },
+  created() {
+    this.getColumns();
+    this.getList();
+  },
+  methods: {
+    /** 查询表格列字段 */
+    getColumns() {
+      getColumns("Customer","customerList").then(response => {
+        this.columns = response.data;
+      });
+    },
+    /** 查询客户列表 */
+    getList() {
+      this.loading = true;
+      listCustomer(this.queryParams).then(response => {
+        this.customerList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
+    }
+  }
+};
+```
+
+```vue
+<el-table v-loading="loading" :data="customerList" @selection-change="handleSelectionChange">
+    <el-table-column type="selection" width="55" align="center" />
+    <!-- 动态渲染表头 -->
+    <el-table-column
+      v-for="(column, index) in columns"
+      :key="index"
+      :label="column.fieldName"
+      :prop="column.fieldCode"
+      :width="column.width">
+    </el-table-column>
+    <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <template slot-scope="scope">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="handleUpdate(scope.row)"
+          v-hasPermi="['system:customer:edit']"
+        >修改</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-delete"
+          @click="handleDelete(scope.row)"
+          v-hasPermi="['system:customer:remove']"
+        >删除</el-button>
+      </template>
+    </el-table-column>
+</el-table>
+```
+
+（2）Jquery + Bootstrap 
+
+```JS
+// 获取表格列字段
+$.ajax({
+    url: 'http://127.0.0.1/api/tablecolumn/getTableColumnList?modelCode=Customer&tabName=customerList',  // Replace with your actual endpoint
+    method: 'GET',
+    success: function(response) {
+        if(response.code != 0){
+            $.modal.alertError(response.msg);
+            return;
+        }
+        var columns = response.data;
+        var columnDefs = [];
+        columns.forEach(function(column) {
+            columnDefs.push({
+                field: column.fieldCode,
+                title: column.fieldName,
+                width: column.width,
+                sortable: column.sortFlag,
+            });
+        });
+        // 在数组的开头添加复选框
+        columnDefs.unshift({
+            checkbox: true
+        });  // 添加到开头
+        //操作列
+        var extraColumnEnd =  {
+            title: '操作',
+            align: 'center',
+            width: 100,
+            formatter: function(value, row, index) {
+                var actions = [];
+                actions.push('<a onclick=""><i class="fa fa-edit"></i>编辑</a> ');
+                actions.push('<a onclick=""><i class="fa fa-remove"></i>删除</a>');
+                return actions.join('');
+            }
+        }
+        // 在数组的最后添加操作列
+        columnDefs.push(extraColumnEnd); // 添加到末尾
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "客户",
+            columns: columnDefs,
+        };
+        $.table.init(options);
+    },
+    error: function() {
+        alert('Failed to load columns.');
+    }
+});
+```
+
+```html
+ <table id="bootstrap-table"></table>
+```
+
