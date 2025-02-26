@@ -272,5 +272,5 @@ $.ajax({
 
 如果您有任何问题或建议，欢迎联系：
 
-- **微信**: deng775747758 （请备注：SmartJavaAI）
+- **微信**: deng775747758 （请备注：DynamicTable）
 - **Email**: 775747758@qq.com
